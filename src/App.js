@@ -1,23 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.scss";
+import { useFetch } from "./hooks/useFetch";
+import { useState, useEffect } from "react";
+import { BsTwitter } from "react-icons/bs";
 
 function App() {
+  const url = "https://type.fit/api/quotes";
+  const { data } = useFetch(url);
+  const [quote, setQuote] = useState({});
+
+  useEffect(() => {
+    if (data && data.length > 0 && !quote.text) {
+      const min = 0;
+      const max = data.length;
+      const randomNumber = Math.floor(Math.random() * (max - min) + min);
+
+      setQuote(data[randomNumber]);
+    }
+  }, [data, quote]);
+
+  function getRandomQuote() {
+    const min = 0;
+    const max = data.length;
+    const randomNumber = Math.floor(Math.random() * (max - min) + min);
+
+    setQuote(data[randomNumber]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="app">
+      <header>
+        <h1 className="header">Quote Machine</h1>
       </header>
+      <main id="quote-box">
+        <p className="" id="text">
+          {quote.text}
+        </p>
+        <p className="" id="author">
+          - {quote.author || "Unknown"}
+        </p>
+        <nav className="nav">
+          <a
+            className="tweet-links"
+            href="https://twitter.com/intent/tweet"
+            id="tweet-quote"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <BsTwitter className="tweet-icons" />
+          </a>
+          <button
+            id="new-quote"
+            className="primary-btn"
+            onClick={getRandomQuote}
+          >
+            New quote
+          </button>
+        </nav>
+      </main>
+      <footer className="footer">Created by Francis Pelletier</footer>
     </div>
   );
 }
